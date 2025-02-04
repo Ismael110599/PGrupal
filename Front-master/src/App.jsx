@@ -10,6 +10,7 @@ import Caregivers from './pages/content/caregivers'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import PerfileCare from './pages/content/perfileCaregiver'
+import Login from './pages/content/Login'
 import { BrowserRouter as Router, Routes, Route } from'react-router-dom'
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/cuidadores" element={<Caregivers />} />
         <Route path="/PerfileCare" element={<PerfileCare />} />
         <Route path="/convertirse-en-cuidador" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />
     </Router>

@@ -41,7 +41,7 @@ const Navbar = () => {
                             { label: "Nosotros", href: "/nosotros" },
                             { label: "Servicios", href: "/servicio" },
                             { label: "Cuidadores", href: "/cuidadores" },
-                            { label: "Conviértete en un cuidador", href: "/convertirse-en-cuidador" },
+                            { label: "Inicia Sesion", href: "/Login" },
                         ].map((item, index) => (
                             <Button
                                 key={index}
