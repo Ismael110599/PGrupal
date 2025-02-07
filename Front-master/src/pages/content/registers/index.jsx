@@ -6,8 +6,10 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+const API_URL = "http://35.174.115.223:8080/auth/register"; // URL del backend
+
 const Register = () => {
-    const navigate = useNavigate(); // Definir navigate
+    const navigate = useNavigate(); 
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -15,7 +17,7 @@ const Register = () => {
     const [address, setAddress] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [pets, setPets] = useState([{ name: "", type: "", age: "" }]); // Nueva lista de mascotas
+    const [pets, setPets] = useState([{ name: "", type: "", age: "" }]);
 
     const handleAddPet = () => {
         setPets([...pets, { name: "", type: "", age: "" }]);
@@ -46,11 +48,13 @@ const Register = () => {
             email,
             address,
             password,
-            pets: pets.filter((pet) => pet.name && pet.type && pet.age), // Solo enviar mascotas con datos
+            pets: pets.filter((pet) => pet.name && pet.type && pet.age),
         };
 
         try {
-            const response = await Axios.post("http://35.174.115.223:8080/auth/register", userData);
+            const response = await Axios.post(API_URL, userData, {
+                headers: { "Content-Type": "application/json" },
+            });
 
             if (response.status === 201) {
                 alert("Registro exitoso");
@@ -59,6 +63,7 @@ const Register = () => {
                 alert("Error al registrar.");
             }
         } catch (error) {
+            console.error("Error en el registro:", error);
             alert("Error en el registro: " + (error.response?.data?.message || "Intenta nuevamente"));
         }
     };
@@ -91,13 +96,7 @@ const Register = () => {
                 }}
             >
                 <form onSubmit={handleSubmit}>
-                    <Box
-                        sx={{
-                            display: "grid",
-                            gridTemplateColumns: "1fr 1fr",
-                            gap: "20px",
-                        }}
-                    >
+                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
                         <TextField label="Nombre" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
                         <TextField label="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
                         <TextField label="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} fullWidth />
@@ -106,32 +105,15 @@ const Register = () => {
                         <TextField label="Confirmar contraseña" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} fullWidth />
                     </Box>
 
-                    {/* Sección de mascotas */}
                     <Typography variant="h5" sx={{ marginTop: "20px", color: "#000" }}>
                         Mascotas
                     </Typography>
 
                     {pets.map((pet, index) => (
                         <Box key={index} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                            <TextField
-                                label="Nombre de la mascota"
-                                value={pet.name}
-                                onChange={(e) => handlePetChange(index, "name", e.target.value)}
-                                fullWidth
-                            />
-                            <TextField
-                                label="Tipo (Ej: Perro, Gato)"
-                                value={pet.type}
-                                onChange={(e) => handlePetChange(index, "type", e.target.value)}
-                                fullWidth
-                            />
-                            <TextField
-                                label="Edad"
-                                type="number"
-                                value={pet.age}
-                                onChange={(e) => handlePetChange(index, "age", e.target.value)}
-                                fullWidth
-                            />
+                            <TextField label="Nombre de la mascota" value={pet.name} onChange={(e) => handlePetChange(index, "name", e.target.value)} fullWidth />
+                            <TextField label="Tipo (Ej: Perro, Gato)" value={pet.type} onChange={(e) => handlePetChange(index, "type", e.target.value)} fullWidth />
+                            <TextField label="Edad" type="number" value={pet.age} onChange={(e) => handlePetChange(index, "age", e.target.value)} fullWidth />
                         </Box>
                     ))}
 
