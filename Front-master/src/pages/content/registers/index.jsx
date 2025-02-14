@@ -6,7 +6,8 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-const API_URL = "http://35.174.115.223:8080/auth/register"; // URL del backend
+// const API_URL = "http://35.174.115.223:8080/auth/register"; // URL del backend
+const API_URL = "mongodb://localhost:27017/auth/register"
 
 const Register = () => {
     const navigate = useNavigate(); 
@@ -63,7 +64,6 @@ const Register = () => {
                 alert("Error al registrar.");
             }
         } catch (error) {
-            console.error("Error en el registro:", error);
             alert("Error en el registro: " + (error.response?.data?.message || "Intenta nuevamente"));
         }
     };
@@ -97,7 +97,7 @@ const Register = () => {
             >
                 <form onSubmit={handleSubmit}>
                     <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                        <TextField label="Nombre" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
+                        <TextField label="Nombre" id='Nombre' name="Nombre" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
                         <TextField label="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
                         <TextField label="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} fullWidth />
                         <TextField label="Dirección" value={address} onChange={(e) => setAddress(e.target.value)} fullWidth />
