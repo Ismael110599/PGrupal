@@ -89,9 +89,9 @@ const Login = () => {
                             marginTop: "20px",
                             textAlign: "center",
                             color: "#000",
-                        }}
+                        }}  
                     >
-                        ¿No tienes cuenta? 
+                        ¿No tienes cuenta?{"  "}
                         <span
                             onClick={() => navigate("/convertirse-en-cuidador")}
                             style={{

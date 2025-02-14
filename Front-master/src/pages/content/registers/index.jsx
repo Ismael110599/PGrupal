@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
 // const API_URL = "http://35.174.115.223:8080/auth/register"; // URL del backend
-const API_URL = "mongodb://localhost:27017/auth/register"
+const API_URL = "http://localhost:8080/auth/register"
 
 const Register = () => {
     const navigate = useNavigate(); 
@@ -126,7 +126,7 @@ const Register = () => {
                     </Button>
 
                     <Typography variant="body1" sx={{ marginTop: "20px", textAlign: "center", color: "#000" }}>
-                        Ya tienes cuenta?{" "}
+                        Ya tienes cuenta?
                         <span
                             onClick={() => navigate("/login")}
                             style={{
