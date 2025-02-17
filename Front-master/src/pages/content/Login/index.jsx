@@ -1,14 +1,26 @@
-import React, { useState } from "react";
-import { Container, TextField, Button, Typography, Box, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // Para redireccionar a la página de registro
+import React, { useState, useEffect } from "react";
+import { Container, TextField, Button, Typography, Box, Paper, InputAdornment, IconButton, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Login = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-    const navigate = useNavigate(); // Hook para la navegación
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            navigate("/PerfileCare");
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({
@@ -17,26 +29,62 @@ const Login = () => {
         });
     };
 
+    const handleLogin = async () => {
+        if (!formData.email || !formData.password) {
+            toast.error("Todos los campos son obligatorios.");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await axios.post("http://localhost:8080/auth/login", {
+                email: formData.email,
+                password: formData.password,
+            });
+
+            toast.success(response.data.message);
+
+            const token = response.data.data.token;
+            localStorage.setItem("token", token);
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            navigate("/PerfileCare");
+        } catch (error) {
+            if (!error.response) {
+                toast.error("Error de red. Intenta de nuevo más tarde.");
+            } else {
+                toast.error(error.response?.data?.message || "Error al iniciar sesión.");
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Datos enviados:", formData);
-        // Aquí puedes agregar la lógica para autenticar al usuario
+        handleLogin();
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     return (
-        <Box 
-            sx={{ 
-                backgroundColor: "white", 
-                minHeight: "100vh", 
-                display: "flex", 
-                justifyContent: "center", 
-                alignItems: "center", // Asegura la alineación vertical
+        <Box
+            sx={{
+                backgroundColor: "white",
+                minHeight: "100vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                animation: "fadeIn 0.5s ease-in-out",
             }}
         >
             <Container maxWidth="sm">
-                <Box 
-                    component={Paper} 
-                    elevation={3} 
+                <Box
+                    component={Paper}
+                    elevation={6}
                     sx={{
                         padding: 4,
                         display: "flex",
@@ -44,10 +92,11 @@ const Login = () => {
                         alignItems: "center",
                         width: "100%",
                         maxWidth: 400,
-                        margin: "auto", // Esto ayuda a asegurar que el contenido se centre
+                        margin: "auto",
+                        borderRadius: 2,
                     }}
                 >
-                    <Typography variant="h5" gutterBottom>
+                    <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: '#1976d2' }}>
                         Iniciar Sesión
                     </Typography>
                     <form onSubmit={handleSubmit} style={{ width: "100%" }}>
@@ -61,10 +110,11 @@ const Login = () => {
                             variant="outlined"
                             value={formData.email}
                             onChange={handleChange}
+                            autoComplete="email"
                         />
                         <TextField
                             label="Contraseña"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             name="password"
                             fullWidth
                             margin="normal"
@@ -72,15 +122,40 @@ const Login = () => {
                             variant="outlined"
                             value={formData.password}
                             onChange={handleChange}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={togglePasswordVisibility}
+                                            edge="end"
+                                            sx={{
+                                                color: "#1976d2",
+                                                '&:hover': {
+                                                    color: "#1565c0", 
+                                                }
+                                            }}
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
-                        <Button 
-                            type="submit" 
-                            variant="contained" 
-                            color="primary" 
-                            fullWidth 
-                            sx={{ mt: 2 }}
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{
+                                mt: 2,
+                                backgroundColor: "#1976d2",
+                                '&:hover': {
+                                    backgroundColor: "#1565c0",
+                                }
+                            }}
+                            disabled={isLoading}
                         >
-                            Iniciar Sesión
+                            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Iniciar Sesión"}
                         </Button>
                     </form>
                     <Typography
@@ -89,9 +164,9 @@ const Login = () => {
                             marginTop: "20px",
                             textAlign: "center",
                             color: "#000",
-                        }}  
+                        }}
                     >
-                        ¿No tienes cuenta?{"  "}
+                        ¿No tienes cuenta?{" "}
                         <span
                             onClick={() => navigate("/convertirse-en-cuidador")}
                             style={{
@@ -105,6 +180,7 @@ const Login = () => {
                     </Typography>
                 </Box>
             </Container>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} />
         </Box>
     );
 };

@@ -5,9 +5,10 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// const API_URL = "http://35.174.115.223:8080/auth/register"; // URL del backend
-const API_URL = "http://localhost:8080/auth/register"
+const API_URL = "http://localhost:8080/auth/register";
 
 const Register = () => {
     const navigate = useNavigate(); 
@@ -34,12 +35,12 @@ const Register = () => {
         e.preventDefault();
 
         if (!name || !email || !phone || !address || !password || !confirmPassword) {
-            alert("Todos los campos son obligatorios.");
+            toast.warn("⚠️ Todos los campos son obligatorios.", { position: "top-right", autoClose: 3000 });
             return;
         }
 
         if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden.");
+            toast.error("❌ Las contraseñas no coinciden.", { position: "top-right", autoClose: 3000 });
             return;
         }
 
@@ -58,13 +59,16 @@ const Register = () => {
             });
 
             if (response.status === 201) {
-                alert("Registro exitoso");
-                navigate("/login");
+                toast.success("✅ Registro exitoso", { position: "top-right", autoClose: 3000 });
+                setTimeout(() => navigate("/login"), 3000);
             } else {
-                alert("Error al registrar.");
+                toast.error("❌ Error al registrar.", { position: "top-right", autoClose: 3000 });
             }
         } catch (error) {
-            alert("Error en el registro: " + (error.response?.data?.message || "Intenta nuevamente"));
+            toast.error(`❌ Error en el registro: ${error.response?.data?.message || "Intenta nuevamente"}`, {
+                position: "top-right",
+                autoClose: 3000,
+            });
         }
     };
 
@@ -73,73 +77,192 @@ const Register = () => {
             sx={{
                 minHeight: "100vh",
                 width: "100%",
-                backgroundColor: "#ffffff",
+                backgroundColor: "#f3f4f6",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "20px",
+                padding: "30px",
             }}
         >
-            <Typography variant="h2" sx={{ marginBottom: "20px", color: "#000" }}>
-                Registro
+            <Typography variant="h2" sx={{ marginBottom: "30px", fontWeight: "bold", color: "#000" }}>
+                Registro de Usuario
             </Typography>
 
             <Box
                 sx={{
-                    width: "90%",
-                    maxWidth: "600px",
-                    backgroundColor: "rgba(255, 255, 255, 0.9)",
-                    padding: "20px",
-                    borderRadius: "8px",
-                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                    width: "100%",
+                    maxWidth: "800px",
+                    backgroundColor: "#ffffff",
+                    padding: "30px",
+                    borderRadius: "10px",
+                    boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.1)",
                 }}
             >
                 <form onSubmit={handleSubmit}>
-                    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-                        <TextField label="Nombre" id='Nombre' name="Nombre" value={name} onChange={(e) => setName(e.target.value)} fullWidth />
-                        <TextField label="Correo electrónico" value={email} onChange={(e) => setEmail(e.target.value)} fullWidth />
-                        <TextField label="Teléfono" value={phone} onChange={(e) => setPhone(e.target.value)} fullWidth />
-                        <TextField label="Dirección" value={address} onChange={(e) => setAddress(e.target.value)} fullWidth />
-                        <TextField label="Contraseña" type="password" value={password} onChange={(e) => setPassword(e.target.value)} fullWidth />
-                        <TextField label="Confirmar contraseña" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} fullWidth />
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "20px",
+                            marginBottom: "20px",
+                        }}
+                    >
+                        <TextField
+                            label="Nombre Completo"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                        />
+                        <TextField
+                            label="Correo Electrónico"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                        />
+                        <TextField
+                            label="Teléfono"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                        />
+                        <TextField
+                            label="Dirección"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                        />
                     </Box>
 
-                    <Typography variant="h5" sx={{ marginTop: "20px", color: "#000" }}>
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gridTemplateColumns: "1fr 1fr",
+                            gap: "20px",
+                            marginBottom: "20px",
+                        }}
+                    >
+                        <TextField
+                            label="Contraseña"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                        />
+                        <TextField
+                            label="Confirmar Contraseña"
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            fullWidth
+                            variant="outlined"
+                            sx={{ backgroundColor: "#ffff", borderRadius: "5px" }}
+                        />
+                    </Box>
+
+                    <Typography variant="h5" sx={{ marginTop: "30px", color: "#4A90E2" }}>
                         Mascotas
                     </Typography>
 
                     {pets.map((pet, index) => (
-                        <Box key={index} sx={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px", marginBottom: "10px" }}>
-                            <TextField label="Nombre de la mascota" value={pet.name} onChange={(e) => handlePetChange(index, "name", e.target.value)} fullWidth />
-                            <TextField label="Tipo (Ej: Perro, Gato)" value={pet.type} onChange={(e) => handlePetChange(index, "type", e.target.value)} fullWidth />
-                            <TextField label="Edad" type="number" value={pet.age} onChange={(e) => handlePetChange(index, "age", e.target.value)} fullWidth />
+                        <Box
+                            key={index}
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns: "1fr 1fr 1fr",
+                                gap: "10px",
+                                marginBottom: "15px",
+                            }}
+                        >
+                            <TextField
+                                label="Nombre de la Mascota"
+                                value={pet.name}
+                                onChange={(e) => handlePetChange(index, "name", e.target.value)}
+                                fullWidth
+                                variant="outlined"
+                                sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                            />
+                            <TextField
+                                label="Tipo (Ej: Perro, Gato)"
+                                value={pet.type}
+                                onChange={(e) => handlePetChange(index, "type", e.target.value)}
+                                fullWidth
+                                variant="outlined"
+                                sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                            />
+                            <TextField
+                                label="Edad"
+                                type="number"
+                                value={pet.age}
+                                onChange={(e) => handlePetChange(index, "age", e.target.value)}
+                                fullWidth
+                                variant="outlined"
+                                sx={{ backgroundColor: "#f9fafb", borderRadius: "5px" }}
+                            />
                         </Box>
                     ))}
 
-                    <Button fullWidth color="secondary" onClick={handleAddPet} sx={{ marginTop: "10px" }}>
+                    <Button
+                        fullWidth
+                        color="secondary"
+                        onClick={handleAddPet}
+                        sx={{
+                            marginTop: "15px",
+                            backgroundColor: "transparent",
+                            color: "#000", // Color negro para el texto
+                            "&:hover": { backgroundColor: "rgba(74, 144, 226, 0.1)" }, // Efecto hover sutil
+                        }}
+                    >
                         Agregar Mascota
                     </Button>
 
-                    <Button fullWidth color="primary" type="submit" sx={{ marginTop: "20px" }}>
+                    <Button
+                        fullWidth
+                        type="submit"
+                        sx={{
+                            marginTop: "30px",
+                            backgroundColor: "transparent",
+                            color: "#000", // Color negro para el texto
+                            "&:hover": { backgroundColor: "rgba(74, 144, 226, 0.1)" }, // Efecto hover sutil
+                        }}
+                    >
                         Registrarse
                     </Button>
-
-                    <Typography variant="body1" sx={{ marginTop: "20px", textAlign: "center", color: "#000" }}>
-                        Ya tienes cuenta?
-                        <span
-                            onClick={() => navigate("/login")}
-                            style={{
-                                color: "blue",
-                                textDecoration: "underline",
-                                cursor: "pointer",
-                            }}
-                        >
-                            Inicia sesión
-                        </span>
-                    </Typography>
                 </form>
+
+                <Typography
+                    variant="body1"
+                    sx={{
+                        marginTop: "25px",
+                        textAlign: "center",
+                        color: "#333",
+                    }}
+                >
+                    ¿Ya tienes cuenta?{" "}
+                    <span
+                        onClick={() => navigate("/login")}
+                        style={{
+                            color: "#4A90E2",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                        }}
+                    >
+                        Inicia sesión
+                    </span>
+                </Typography>
             </Box>
+
+            <ToastContainer />
         </Box>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -8,28 +8,31 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Grid from "@mui/material/Grid";
-
-const caregiversList = [
-    {
-        name: "Alice Johnson",
-        email: "alice@example.com",
-        location: "San Francisco, CA",
-        memberSince: "Enero 2023",
-        about: "Me han gustado los animales desde pequenia",
-        skills: ["null"],
-    },
-    {
-        name: "Bob Smith",
-        email: "bob@example.com",
-        location: "New York, NY",
-        memberSince: "Marzo 2022",
-        about: "Apacionado por pasar tiempo con mis mascotas .",
-        skills: ["null"],
-    },
-];
+import Axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Caregivers = () => {
+    const [caregiversList, setCaregiversList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+
+    useEffect(() => {
+        const fetchCaregivers = async () => {
+            try {
+                const response = await Axios.get('http://localhost:8080/caregivers', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                setCaregiversList(response.data.data); // Suponiendo que los cuidadores están en "data"
+            } catch (error) {
+                console.error("Error al obtener la lista de cuidadores:", error);
+                toast.error('❌ No se pudo obtener la lista de cuidadores');
+            }
+        };
+
+        fetchCaregivers();
+    }, []);
 
     const filteredCaregivers = caregiversList.filter((caregiver) =>
         caregiver.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -118,6 +121,8 @@ const Caregivers = () => {
                     </Grid>
                 ))}
             </Grid>
+
+            <ToastContainer />
         </Box>
     );
 };
